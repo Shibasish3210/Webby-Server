@@ -1,4 +1,4 @@
-import isEmail from "validator/lib/isemail.js";
+import validator from "validator";
 import { router } from "../app.js";
 import { createUserAndSave, emailExist, updateEmailVerified, usernameExist } from "../model/userModel.js";
 import { validateRegistration } from "../utils/cleanupAndValidate.js";
@@ -103,7 +103,7 @@ authRoute.post('/login', async (req, res) => {
     const { loginId, password } = req.body;
 
     let user;
-    if(isEmail(loginId)){
+    if(validator.isEmail(loginId)){
         user = await emailExist(loginId);
         if(!user){
             return res.send({

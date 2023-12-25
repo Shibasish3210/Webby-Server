@@ -1,6 +1,5 @@
 import validator from "validator";
 import { Id } from "../db.js";
-import isEmail from "validator/lib/isemail.js";
 
 
 export const validateRegistration = ({name, email, password, userName})=>{
@@ -19,7 +18,7 @@ export const validateRegistration = ({name, email, password, userName})=>{
         if(password.length <= 5 || password.length >= 20) reject('Password must be between 6-20 characters');
         if(userName.length <= 3 || userName.length > 20) reject('userName must be between 4-20 characters');
 
-        if(!isEmail(email)) reject('Invalid email');
+        if(!validator.isEmail(email)) reject('Invalid email');
         // if(!validator.isAlphanumeric(password)) reject('password must be alphanumeric');
         // if(!validateImage(avatar)) reject('Invalid image');
         
