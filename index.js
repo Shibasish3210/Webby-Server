@@ -12,8 +12,8 @@ app.use(json());
 app.use(urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({
-    // origin: "https://code-webby.vercel.app",
-    origin: "http://localhost:5173",
+    origin: "https://code-webby.vercel.app",
+    // origin: "http://localhost:5173",
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
 }))
