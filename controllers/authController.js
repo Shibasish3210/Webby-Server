@@ -146,9 +146,9 @@ authRoute.post('/login', async (req, res) => {
 
     res.cookie('USER_TOKEN', USER_TOKEN,{
         maxAge: (1000 * 60 * 60 * 60 * 24),
-        httpOnly: true
-        // secure: true,
-        // sameSite: 'none',
+        secure: true,
+        sameSite: 'none',
+        // httpOnly: true,
     })
     res.send({
         status: 200,
