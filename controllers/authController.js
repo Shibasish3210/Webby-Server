@@ -144,16 +144,11 @@ authRoute.post('/login', async (req, res) => {
     }
     const USER_TOKEN = createUserToken(clientUser);
 
-    res.cookie('USER_TOKEN', USER_TOKEN,{
-        maxAge: (1000 * 60 * 60 * 60 * 24),
-        secure: true,
-        sameSite: 'none',
-        // httpOnly: true,
-    })
     res.send({
         status: 200,
         message: 'Login successful',
-        user: clientUser
+        user: clientUser,
+        accessToken: USER_TOKEN
     })
 })
 authRoute.put('/logout', async (req, res) => {
