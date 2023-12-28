@@ -153,7 +153,6 @@ authRoute.post('/login', async (req, res) => {
 })
 authRoute.put('/logout', async (req, res) => {
     console.log(req.cookies);
-    res.clearCookie('USER_TOKEN');
     res.send({
         status: 200,
         message: 'logged out successfully',
