@@ -1,6 +1,6 @@
 import validator from "validator";
 import { router } from "../app.js";
-import { createUserAndSave, emailExist, updateEmailVerified, usernameExist } from "../model/userModel.js";
+import { createUserAndSave, deleteUser, emailExist, updateEmailVerified, usernameExist } from "../model/userModel.js";
 import { validateRegistration } from "../utils/cleanupAndValidate.js";
 import { createToken, createUserToken, validateToken } from "../utils/jwtToken.js";
 import { sendEmail } from "../utils/nodeMailer.js";
@@ -21,7 +21,6 @@ authRoute.get('/authenticate',isAuth, (req, res) => {
 
 authRoute.post('/register', async ( req, res )=>{
     const { name, email, password, userName, avatar } = req.body;
-    console.log(req.body);
 
     try {
         await validateRegistration({name, email, password, userName});
@@ -42,7 +41,7 @@ authRoute.post('/register', async ( req, res )=>{
     if(await emailExist(email)){
         return res.send({
             status: 400,
-            message: 'Username already exists'
+            message: 'Email already exists'
         })
     };
 
@@ -151,11 +150,44 @@ authRoute.post('/login', async (req, res) => {
         accessToken: USER_TOKEN
     })
 })
-authRoute.put('/logout', async (req, res) => {
-    console.log(req.cookies);
+authRoute.delete('/delete', isAuth, async (req, res) => {
+    const { email, password } = req.query;
+    const errorObj = {
+        status: 400,
+    };
+    const userId = req.user.userId;
+
+    if(!email || !password) {
+        errorObj.message = 'Missing credentials';
+        return res.send(errorObj);
+    }
+    
+    //checking if the user entered correct email
+    const userDB = await emailExist(email);
+    if(!userDB || userDB._id.toString() !== userId){
+        errorObj.message = `Wrong email address`;
+        return res.send(errorObj);
+    } 
+
+    //checking if the user entered correct password
+    const isMatching = await decrypt(password, userDB.password);
+    if(!isMatching){
+        errorObj.message = `Wrong Password`;
+        return res.send(errorObj);
+    }
+
+    const deletedUser = await deleteUser(userId);
+
+    if(!deletedUser){
+        res.send({
+            status: 500,
+            message: 'Internal Server Error',
+        })
+    }
+
     res.send({
         status: 200,
-        message: 'logged out successfully',
+        message: 'Account Deleted Successfully',
     })
 })
 

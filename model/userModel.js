@@ -43,4 +43,17 @@ export const updateEmailVerified = async (email) =>{
         console.log(error);
         return null;
     }
-}
+};
+
+export const deleteUser = async (userId) =>{
+    try {
+        const response = await userModel.findOneAndDelete({_id: userId});
+    
+        if(!response) return null;
+
+        return response;
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+};

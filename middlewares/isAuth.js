@@ -6,7 +6,7 @@ const errorObj = {
 };
 
 const isAuth = (req, res, next)=>{
-    const TOKEN = req.header.userToken
+    const TOKEN = req.headers.usertoken
 
     if(!TOKEN) return res.send(errorObj);
 

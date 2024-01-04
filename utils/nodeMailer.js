@@ -37,9 +37,7 @@ export const sendEmail = (email, token) =>{
             console.log(err);
             status =  false;
         }else{
-            console.log(info);
             status = true;
-            console.log(status);
         }
     })
     console.log(status)
