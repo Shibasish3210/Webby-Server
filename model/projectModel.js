@@ -80,3 +80,23 @@ export const getProjects = async (userId, SKIP)=>{
         return null;
     }
 }
+export const getFeedProjects = async (SKIP)=>{
+    const LIMIT = +process.env.Limit;
+    try {
+        const projects = await projectModel.aggregate([
+            {
+                $sort: { createdAt : -1}
+            },
+            {
+                $facet:{
+                    metadata: [ { $count: "total" }, { $addFields: { resultPerPage: LIMIT } } ],
+                    data: [{$skip: SKIP}, {$limit: LIMIT}]
+                }
+            }
+        ])
+        return projects[0];
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+}

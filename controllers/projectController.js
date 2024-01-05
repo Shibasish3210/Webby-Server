@@ -1,6 +1,6 @@
 import { router } from "../app.js";
 import isAuth from "../middlewares/isAuth.js";
-import { createProject, deleteProject, getProjects, projectExists, updateProject } from "../model/projectModel.js";
+import { createProject, deleteProject, getFeedProjects, getProjects, projectExists, updateProject } from "../model/projectModel.js";
 import { validateProjectCreation, validateProjectUpdation } from "../utils/cleanupAndValidate.js";
 
 const projectRoute = router();
@@ -22,6 +22,21 @@ projectRoute.get('/', async (req, res) => {
         data: projects
     })
 });
+projectRoute.get('/projects', async (req, res) => {
+    const SKIP = +req.query.skip || 0;
+    const projects = await getFeedProjects(SKIP);
+    if(!projects){
+        return res.send({
+            status: 500,
+            message: 'Something went wrong'
+        })
+    }
+    return res.send({
+        status: 200,
+        message: 'Successfully found projects',
+        data: projects
+    })
+})
 projectRoute.post('/create', async (req, res) => {
     console.log(req.user);
     const {name} = req.body;
