@@ -5,6 +5,15 @@ const projectSchema = new Schema({
         type: 'string',
         required: true
     },
+    details:{
+        type: 'string',
+        required: true
+    },
+    isPublished:{
+        type: 'boolean',
+        required: true,
+        default: true,
+    },
     html:{
         type: 'string',
         required: false,

@@ -33,14 +33,17 @@ const validateImage = async (avatar)=>{
     return buff.type.startsWith('image/');
 }
 
-export const validateProjectCreation = (name, userId) => {
+export const validateProjectCreation = (name, details, visibility, userId) => {
     return new Promise((resolve, reject)=>{
-        if(!name || !userId) reject('Missing Credentials');
+        if(!name || !details  ||  !userId) reject('Missing Credentials');
 
         if(typeof name !== 'string') reject('Invalid data type for Project name');
+        if(typeof details !== 'string') reject('Invalid data type for Project dscription');
+        if(typeof visibility !== 'boolean') reject('Invalid data type for Project visibility');
         if(typeof userId !== 'string') reject('Invalid data type for User Id');
 
         if(name.length <= 3 || name.length >= 31) reject('Project name must be within 4-30 characters');
+        if(details.length <= 9 || name.length >= 201) reject('Project name must be within 9-200 characters');
 
         resolve(new Id(userId));
     })

@@ -9,7 +9,7 @@ export const sendEmail = (email, token) =>{
     <p>Please Veify Your Email By Clicking The Button Below!</p>
     
     <button type="button">
-      <a href="http://localhost:3333/auth/verify/${token}">Click Here</a>
+      <a href="${process.env.Environment === 'production'? 'https://webby-server.vercel.app' : 'http://localhost:3333'}/auth/verify/${token}">Click Here</a>
     </button>
     
     <p>Thanks for using our service</p>

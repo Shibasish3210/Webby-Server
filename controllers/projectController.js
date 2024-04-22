@@ -38,21 +38,20 @@ projectRoute.get('/projects', async (req, res) => {
     })
 })
 projectRoute.post('/create', async (req, res) => {
-    console.log(req.user);
-    const {name} = req.body;
+    const {name, details, visibility} = req.body;
     const { userId } = req.user;
+    console.log(name, details, visibility, userId);
     let ObjUserID;
     try{
-        ObjUserID = await validateProjectCreation(name, userId);
+        ObjUserID = await validateProjectCreation(name, details, visibility, userId);
     }catch(err){
-        console.log(err);
         return res.send({
             status: 400,
             message:err
         })
     }
 
-    const projectDB = await createProject(name, ObjUserID);
+    const projectDB = await createProject(name, details, visibility, ObjUserID);
 
     if(!projectDB){
         return res.send({

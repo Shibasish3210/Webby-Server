@@ -25,7 +25,6 @@ authRoute.post('/register', async ( req, res )=>{
     try {
         await validateRegistration({name, email, password, userName});
     } catch (error) {
-        console.log(error)
         return res.send({
             status: 400,
             message: error
@@ -150,6 +149,7 @@ authRoute.post('/login', async (req, res) => {
         accessToken: USER_TOKEN
     })
 })
+
 authRoute.delete('/delete', isAuth, async (req, res) => {
     const { email, password } = req.query;
     const errorObj = {

@@ -1,9 +1,11 @@
 import { Id } from "../db.js";
 import projectModel from "../schema/projectSchema.js"
 
-export const createProject = async (name,userId)=>{
+export const createProject = async (name, details, visibility, userId)=>{
     const project = new projectModel({
         name,
+        details,
+        isPublished: visibility,
         userId,
         createdAt: Date.now(),
     });
