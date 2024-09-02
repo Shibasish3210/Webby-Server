@@ -11,6 +11,11 @@ connectToMongoDB();
 app.use(json());
 app.use(urlencoded({ extended: true }));
 app.use(cookieParser());
+console.log(
+	process.env.Environment,
+	process.env.devBaseURL,
+	process.env.prodBaseURL,
+);
 app.use(
 	cors({
 		origin: `${
@@ -20,7 +25,7 @@ app.use(
 		}`,
 		methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 		credentials: true,
-	})
+	}),
 );
 app.use("/auth", authRoute);
 app.use("/project", projectRoute);

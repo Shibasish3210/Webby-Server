@@ -28,7 +28,7 @@ export const sendEmail = (email, token) =>{
     const mailOptions = {
         from: 'shibasish3210@gmail.com',
         to: email,
-        subject: 'Email Authentication for Code Playgroung',
+        subject: 'Email Authentication for Code Playground',
         html: emailTemplate
     }
 
