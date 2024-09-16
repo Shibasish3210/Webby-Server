@@ -11,15 +11,10 @@ connectToMongoDB();
 app.use(json());
 app.use(urlencoded({ extended: true }));
 app.use(cookieParser());
-console.log(
-	process.env.Environment,
-	process.env.devBaseURL,
-	process.env.prodBaseURL,
-);
 app.use(
 	cors({
 		origin: `${
-			process.env.Environment === "developement"
+			process.env.Environment === "development"
 				? process.env.devBaseURL
 				: process.env.prodBaseURL
 		}`,
