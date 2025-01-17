@@ -14,7 +14,6 @@ export const createProject = async (name, details, visibility, userId) => {
 		const projectDb = await project.save();
 		return projectDb;
 	} catch (error) {
-		console.log(error);
 		return null;
 	}
 };
@@ -29,7 +28,20 @@ export const updateProject = async ({ projectId, html, css, js }) => {
 		}
 		return projectDB;
 	} catch (error) {
-		console.log(error);
+		return null;
+	}
+};
+export const updateProjectVisibility = async ({ projectId, html, css, js }) => {
+	try {
+		const projectDB = await projectModel.findOneAndUpdate(
+			{ _id: projectId },
+			{ isPublished: !isPublished },
+		);
+		if (!projectDB) {
+			return null;
+		}
+		return projectDB;
+	} catch (error) {
 		return null;
 	}
 };

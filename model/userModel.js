@@ -1,3 +1,4 @@
+import { uploadOnCloudinary } from "../config/cloudinary.js";
 import userModel from "../schema/userSchema.js";
 
 export const usernameExist = async (userName) => {
@@ -30,11 +31,27 @@ export const createUserAndSave = async ({
 	});
 
 	try {
-		await userObj.save();
+		const user = await userObj.save();
+		return user;
 	} catch (error) {
 		console.log(error);
 		return null;
 	}
+};
+
+export const uploadImageOnCloudinary = (patientPhoto) => {
+	return new Promise(async (resolve, reject) => {
+		let uploadedPatientPhoto;
+	try {
+		uploadedPatientPhoto = await uploadOnCloudinary(patientPhoto);
+		if (!uploadedPatientPhoto)
+			reject("Failed to upload image on cloudinary");
+	} catch (error) {
+		reject(error)
+		
+	}
+		resolve(uploadedPatientPhoto);
+	});
 };
 
 export const updateEmailVerified = async (email) => {

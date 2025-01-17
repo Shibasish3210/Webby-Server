@@ -1,72 +1,117 @@
 import validator from "validator";
 import { Id } from "../db.js";
+import { decrypt } from "./password.js";
+
+class ApiError extends Error {
+	constructor(message, status = 400) {
+		super(message);
+		this.name = "ApiError";
+		this.status = status;
+	}
+}
 
 export const validateRegistration = ({ name, email, password, userName }) => {
 	return new Promise((resolve, reject) => {
 		if (!name || !email || !password || !userName) {
-			reject("Missing Credentials");
+			reject(new ApiError("Missing Credentials"));
 		}
 
-		if (typeof name !== "string") reject("Invalid datatype for name");
-		if (typeof email !== "string") reject("Invalid datatype for email");
+		if (typeof name !== "string")
+			reject(new ApiError("Invalid datatype for name"));
+		if (typeof email !== "string")
+			reject(new ApiError("Invalid datatype for email"));
 		if (typeof password !== "string")
-			reject("Invalid datatype for password");
+			reject(new ApiError("Invalid datatype for password"));
 		if (typeof userName !== "string")
-			reject("Invalid datatype for userName");
-		// if(typeof avatar !== 'string')reject('Invalid datatype for avatar');
+			reject(new ApiError("Invalid datatype for userName"));
 
 		if (name.length <= 3 || name.length > 50)
-			reject("Name must be between 4-50 characters");
+			reject(new ApiError("Name must be between 4-50 characters"));
 		if (password.length <= 5 || password.length >= 20)
-			reject("Password must be between 6-20 characters");
+			reject(new ApiError("Password must be between 6-20 characters"));
 		if (userName.length <= 3 || userName.length > 20)
-			reject("userName must be between 4-20 characters");
+			reject(new ApiError("userName must be between 4-20 characters"));
 
-		if (!validator.isEmail(email)) reject("Invalid email");
-		// if(!validator.isAlphanumeric(password)) reject('password must be alphanumeric');
-		// if(!validateImage(avatar)) reject('Invalid image');
+		if (!validator.isEmail(email)) reject(new ApiError("Invalid email"));
 
 		resolve();
 	});
 };
+export const validateUserUpdation = async ({
+	name,
+	userName,
+	password,
+	newPassword,
+	actualPass,
+}) => {
+	if (!password) {
+		return Promise.reject(
+			new ApiError("Password is needed to update user"),
+		);
+	}
+	if (typeof password !== "string") {
+		return Promise.reject(new ApiError("Invalid datatype for password"));
+	}
+	console.log(password, actualPass)
+	const isPasswordMatching = await decrypt(password, actualPass);
+	if (!isPasswordMatching) {
+		return Promise.reject(new ApiError("Wrong Password"));
+	}
+	return new Promise((resolve, reject) => {
+		if (name && typeof name !== "string")
+			reject(new ApiError("Invalid datatype for name"));
 
-const validateImage = async (avatar) => {
-	const res = await fetch(avatar);
-	const buff = await res.blob();
+		if (newPassword && typeof newPassword !== "string") {
+			reject(new ApiError("Invalid datatype for password"));
+		} else if (
+			newPassword &&
+			(newPassword.length <= 5 || newPassword.length >= 20)
+		) {
+			reject(new ApiError("Password must be between 6-20 characters"));
+		}
 
-	return buff.type.startsWith("image/");
+		if (name.length <= 3 || name.length > 50)
+			reject(new ApiError("Name must be between 4-50 characters"));
+		if (userName.length <= 3 || userName.length > 20)
+			reject(new ApiError("userName must be between 4-20 characters"));
+
+		resolve();
+	});
 };
 
 export const validateProjectCreation = (name, details, visibility, userId) => {
 	return new Promise((resolve, reject) => {
-		if (!name || !details || !userId) reject("Missing Credentials");
+		if (!name || !details || !userId)
+			reject(new ApiError("Missing Credentials"));
 
 		if (typeof name !== "string")
-			reject("Invalid data type for Project name");
+			reject(new ApiError("Invalid data type for Project name"));
 		if (typeof details !== "string")
-			reject("Invalid data type for Project dscription");
+			reject(new ApiError("Invalid data type for Project description"));
 		if (typeof visibility !== "boolean")
-			reject("Invalid data type for Project visibility");
-		if (typeof userId !== "string") reject("Invalid data type for User Id");
+			reject(new ApiError("Invalid data type for Project visibility"));
+		if (typeof userId !== "string")
+			reject(new ApiError("Invalid data type for User Id"));
 
 		if (name.length <= 3 || name.length >= 31)
-			reject("Project name must be within 4-30 characters");
+			reject(new ApiError("Project name must be within 4-30 characters"));
 		if (details.length <= 7 || details.length >= 201)
-			reject("Project details must be within 7-200 characters");
+			reject(
+				new ApiError("Project details must be within 7-200 characters"),
+			);
 
-		resolve(new Id(userId));
+		resolve(Id.createFromTime(userId));
 	});
 };
-export const validateProjectUpdation = ({ html, css, js }) => {
-	return new Promise((resolve, reject) => {
-		if (
-			typeof html !== "string" ||
-			typeof css !== "string" ||
-			typeof js !== "string"
-		) {
-			reject("Invalid data type for content");
-		}
 
-		resolve();
-	});
+export const validateProjectUpdation = ({ html, css, js }) => {
+	if (
+		typeof html !== "string" ||
+		typeof css !== "string" ||
+		typeof js !== "string"
+	) {
+		return Promise.reject(new ApiError("Invalid data type for content"));
+	}
+
+	return Promise.resolve();
 };

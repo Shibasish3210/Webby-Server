@@ -42,6 +42,5 @@ export const sendEmail = (email, token) => {
 			status = true;
 		}
 	});
-	console.log(status);
-	return status;
+	return false;
 };
