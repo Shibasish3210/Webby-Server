@@ -237,11 +237,16 @@ authRoute.post("/login", async (req, res) => {
 	};
 	const USER_TOKEN = createUserToken(clientUser);
 
+	res.cookie("Bearer", USER_TOKEN,{
+		httpOnly: true,
+		secure: true,
+		sameSite: "none",
+	})
+
 	res.send({
 		status: 200,
 		message: "Login successful",
 		user: clientUser,
-		accessToken: USER_TOKEN,
 	});
 });
 
