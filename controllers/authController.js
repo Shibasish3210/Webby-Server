@@ -285,6 +285,7 @@ authRoute.delete("/delete", isAuth, async (req, res) => {
 		});
 	}
 
+	res.clearCookie("Bearer")
 	res.send({
 		status: 200,
 		message: "Account Deleted Successfully",
